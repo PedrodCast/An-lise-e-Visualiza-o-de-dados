@@ -457,8 +457,8 @@ with tab6:
             st.plotly_chart(fig, key = 171 + x)
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
-            st.button("Resetar", type = "primary", key = "year_p_genrex" + f'{x}')
-            if st.button("Ver tabela", help = "Relação gênero e data de lançamento mais comum", key = "year_p_genrex" + f'{x}'):
+            st.button("Resetar", type = "primary", key = "year_p_genre1" + f'{x}')
+            if st.button("Ver tabela", help = "Relação gênero e data de lançamento mais comum", key = "year_p_genre2" + f'{x}'):
                 st.dataframe(Anls.year_p_genre)
     year_p_genre(1)
 
@@ -491,8 +491,8 @@ with tab6:
             st.plotly_chart(fig, key = 181 + x)
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
-            st.button("Resetar", type="primary", key="year_p_genre_Mx" + f'{x}')
-            if st.button("Ver tabela", help="Relação gênero e média de data de lançamento", key="year_p_genre_Mx" + f'{x}'):
+            st.button("Resetar", type="primary", key="year_p_genre_M1" + f'{x}')
+            if st.button("Ver tabela", help="Relação gênero e média de data de lançamento", key="year_p_genre_M2" + f'{x}'):
                 st.dataframe(Anls.year_p_genre_M)
     year_p_genre_m(1)
 
