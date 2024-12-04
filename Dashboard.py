@@ -29,7 +29,7 @@ with tab1:
 
     # Função permite que o usuário visualize o dataset dinamicamente
     def tabela_interativa():
-        st.write("Selecione os dados nas configurações")
+        st.write("##### Tabela interativa: Selecione os dados nas configurações para acessá-la #####")
         if colunas:
             # Põe texto no site e permite formatação
             st.write("### Dados selecionados: ###")
