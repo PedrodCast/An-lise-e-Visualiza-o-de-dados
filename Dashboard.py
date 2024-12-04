@@ -23,7 +23,7 @@ nota = st.sidebar.selectbox("Escolha aqui qual pontuação do filme deve ser usa
                     ["IMDB_Rating", "Avarage_score", "Meta_score"], help="Só se aplica a gráficos que utilizem a pontuação")
 
 # Permite que o usuário escolha quais colunas ele deseja ver nas tabelas interativas
-colunas = st.sidebar.multiselect("Escolha as colunas que serão exibidas", Anls.df.columns, placeholder="Digite aqui")
+colunas = st.sidebar.multiselect("Escolha as colunas que serão exibidas nas tabelas interativas.", Anls.df.columns, placeholder="Digite aqui")
 # As funções serão executas na aba x
 with tab1:
 
