@@ -61,7 +61,7 @@ with tab1:
             st.write(" *Nenhum* dado selecionado.")
           
     tabela_interativa()     
-    st.write("Esse dataset contém informações, como o nome sugere, sobre os 1000 filmes com maior pontuação IMDB.")
+    st.write("### Esse dataset contém informações, como o nome sugere, sobre os 1000 filmes com maior pontuação IMDB. ###")
     st.write("Suas colunas são:")
 
     #Divide a exibição em colunas
