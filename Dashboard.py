@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 from itertools import combinations, product
 import Anls
 
+def Vermelho '#B22222'
+
 
 # Título e cabeçalho
 st.title("Dashboard interativo :streamlit:", help = "Organização de dados - 03/12/2024" )
@@ -19,8 +21,30 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Entendendo o dataset", "An�
 st.sidebar.title("Configurações")
 
 #Adiciona uma caixa de escolha na aba lateral
-nota = st.sidebar.selectbox("Escolha aqui qual pontuação do filme deve ser usada",
+nota = st.sidebar.selectbox("Escolha aqui qual pontuação do filme deve ser usada.",
                     ["IMDB_Rating", "Avarage_score", "Meta_score"], help="Só se aplica a gráficos que utilizem a pontuação")
+
+# Dicionário de cores com nome e código hexadecimal
+cores = {
+    "Vermelho": "#B22222",
+    "Azul": "#4169E1",
+    "Roxo": "#663399",
+    "Rosa": "#FF69B4",
+    "Verde": "#00FF7F",
+    "Laranja": "#FF4500",
+    "Amarelo": "#F0E68C",
+    "Preto": "#2F4F4F",
+    "Branco": "#FFFAFA"
+}
+
+# Seleção de cores pelo nome
+cor_nome = st.sidebar.selectbox(
+    "Escolha aqui a cor que será utilizada nos gráficos.",
+    list(cores.keys())  # Mostra os nomes das cores
+)
+
+# Obtém o código hexadecimal correspondente
+cor = cores[cor_nome]
 
 # Permite que o usuário escolha quais colunas ele deseja ver nas tabelas interativas
 colunas = st.sidebar.multiselect("Escolha as colunas que serão exibidas nas tabelas interativas.", Anls.df.columns, placeholder="Digite aqui")
@@ -84,7 +108,7 @@ with tab2:
                              x=f'{nota}',
                              y='No_of_Votes',
                              orientation='v',  # Gráfico vertical
-                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre número de votos de um filme e sua pontuação')
             st.plotly_chart(fig)
     votes_p_score(1)
@@ -102,7 +126,7 @@ with tab2:
                              x='No_of_Votes',
                              y='Gross',
                              orientation='v',  # Gráfico vertical
-                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre ganho bruto do filme (em média) e o seu número de votos')
             st.plotly_chart(fig)
     gross_p_votes(1)
@@ -118,7 +142,7 @@ with tab2:
                              y='Runtime',
                              x='No_of_Votes',
                              orientation='v',  # Gráfico vertical
-                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre o número de votos e a duração do filme')
 
             st.plotly_chart(fig)
@@ -141,7 +165,7 @@ with tab3:
                          x='Genre',
                          y='Runtime',
                          orientation='v',  # Gráfico vertical
-                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras (vermelho)
                          labels={'y': 'Gênero', 'x': 'Duração'},
                          title='Relação entre gênero e duração do filme (em média)')
 
@@ -180,7 +204,7 @@ with tab3:
                             x='Runtime',
                             y=f'{nota}',
                             orientation='v',  # Gráfico vertical
-                            color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                            color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                             title='Relação entre a pontuação e a duração do filme')
             st.plotly_chart(fig)
     score_p_runtime(1)
@@ -196,7 +220,7 @@ with tab3:
                              y='Runtime',
                              x='Released_Year',
                              orientation='v',  # Gráfico vertical
-                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre a data de lançamento e a duração do filme')
             st.plotly_chart(fig)
     runtime_p_year(1)
@@ -216,7 +240,7 @@ with tab3:
                              x='Runtime',
                              y='Gross',
                              orientation='v',  # Gráfico vertical
-                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre ganho bruto do filme (em média) e sua duração')
             st.plotly_chart(fig)
     gross_p_runtime(1)
@@ -240,7 +264,7 @@ with tab4:
                         x=Anls.genre_counts.index,
                         y=Anls.genre_counts.values,
                         orientation='v',  # Gráfico vertical
-                        color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                        color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras selecionada nas configurações
                         labels={'y': 'Gênero', 'x': 'Número de filmes'},
                         title='Ocorrência de cada gênero entre os top 1000 filmes')
             st.plotly_chart(fig)
@@ -269,7 +293,7 @@ with tab4:
                              x='Released_Year',
                              y=f'{nota}',
                              orientation='v',  # Gráfico vertical
-                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre a pontuação e a duração do filme')
             st.plotly_chart(fig)
             return
@@ -280,7 +304,7 @@ with tab4:
                          x=Anls.year_counts.index.astype(str),
                          y=Anls.year_counts.values,
                          orientation='v',  # Gráfico vertical
-                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras (vermelho)
                          labels={'y': 'Período de lançamento', 'x': 'Número de filmes'},
                          title='Ocorrência de cada período entre os top 1000 filmes')
             st.plotly_chart(fig)
@@ -310,7 +334,7 @@ with tab4:
                              x=f'{nota}',
                              y='Gross',
                              orientation='v',  # Gráfico vertical
-                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre ganho bruto do filme (em média) e sua pontuação')
             st.plotly_chart(fig)
     gross_p_score(1)
@@ -335,7 +359,7 @@ with tab5:
                          x='Genre',
                          y='Gross',
                          orientation='v',  # Gráfico vertical
-                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras
                          labels={'y': 'Gênero', 'x': 'Arrecadação'},
                          title='Relação entre gênero e ganho bruto do filme (em média)')
             st.plotly_chart(fig)
@@ -355,7 +379,7 @@ with tab5:
                          x='Genre',
                          y='Gross',
                          orientation='v',  # Gráfico vertical
-                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras 
                          labels={'y': 'Gênero', 'x': 'Arrecadação'},
                          title='Relação entre ganho bruto do filme (em média) e seus gêneros')
             st.plotly_chart(fig)
@@ -385,7 +409,7 @@ with tab5:
                              x='Released_Year',
                              y='Gross',
                              orientation='v',  # Gráfico vertical
-                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre ganho bruto do filme (em média) e a sua data de lançamento')
             st.plotly_chart(fig)
     gross_p_year(1)
@@ -417,7 +441,7 @@ with tab6:
                          x='Genre',
                          y='Released_Year',
                          orientation='v',  # Gráfico vertical
-                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras (vermelho)
                          labels={'y': 'Gênero', 'x': 'Ano de lançamento'},
                          title='Relação entre gênero e data de lançamento mais comum')
 
@@ -451,7 +475,7 @@ with tab6:
                          x='Genre',
                          y='Released_Year',
                          orientation='v',  # Gráfico vertical
-                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras (vermelho)
                          labels={'y': 'Gênero', 'x': 'Ano de lançamento'},
                          title='Relação entre gênero e data de lançamento média')
 
