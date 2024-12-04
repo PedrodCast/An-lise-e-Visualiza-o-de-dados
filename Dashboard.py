@@ -1,5 +1,4 @@
 import streamlit as st
-import millify as mils
 from PIL import Image
 import plotly.express as px
 import pandas as pd
