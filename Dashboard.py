@@ -144,7 +144,7 @@ with tab2:
                              color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre o número de votos e a duração do filme')
 
-            st.plotly_chart(fig, key = 3 + x)
+            st.plotly_chart(fig, key = 31 + x)
     votes_p_runtime(1)
 
 with tab3:
