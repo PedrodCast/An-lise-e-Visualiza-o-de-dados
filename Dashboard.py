@@ -182,7 +182,7 @@ with tab3:
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
             st.button("Resetar", type="primary", key="runtime_p_genre1" + f'{x}')
-            if st.button("Ver tabela", help="Relação gênero e duração média", "runtime_p_genre2" + f'{x}'):
+            if st.button("Ver tabela", help="Relação gênero e duração média", key = "runtime_p_genre2" + f'{x}'):
                 st.dataframe(Anls.runtime_p_genre)
     runtime_p_genre(1)
 
