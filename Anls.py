@@ -2,7 +2,6 @@ import pandas as pd
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from itertools import combinations, product
-import millify as mils
 import re
 
 """ Inicializando o Dataset """
