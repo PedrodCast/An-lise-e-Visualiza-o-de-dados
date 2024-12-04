@@ -205,7 +205,7 @@ with tab3:
                             orientation='v',  # Gráfico vertical
                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                             title='Relação entre a pontuação e a duração do filme')
-            st.plotly_chart(fig, key = '5')
+            st.plotly_chart(fig, key = '51')
     score_p_runtime(1)
 
     # Função que gera um gráfico comparando a duração e a data de lançamento dos filmes
