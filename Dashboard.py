@@ -22,18 +22,22 @@ st.sidebar.title("Configurações")
 nota = st.sidebar.selectbox("Escolha aqui qual pontuação do filme deve ser usada",
                     ["IMDB_Rating", "Avarage_score", "Meta_score"], help="Só se aplica a gráficos que utilizem a pontuação")
 
+# Permite que o usuário escolha quais colunas ele deseja ver nas tabelas interativas
+colunas = st.sidebar.multiselect("Escolha as colunas que serão exibidas", Anls.df.columns, placeholder="Digite aqui")
 # As funções serão executas na aba x
 with tab1:
 
-
-    # Permite que o usuário escolha quais colunas ele deseja ver
-    colunas = st.multiselect("Escolha as colunas que serão exibidas", Anls.df.columns, placeholder="Digite aqui")
-    if colunas:
-        # Põe texto no site e permite formatação
-        st.write("### Dados selecionados: ###")
-        st.dataframe(Anls.df[colunas])
-    else:
-        st.write(" *Nenhum* dado selecionado.")
+    # Função permite que o usuário visualize o dataset dinamicamente
+    def tabela_interativa():
+        st.write("Selecione os dados nas configurações")
+        if colunas:
+            # Põe texto no site e permite formatação
+            st.write("### Dados selecionados: ###")
+            st.dataframe(Anls.df[colunas])
+        else:
+            st.write(" *Nenhum* dado selecionado.")
+          
+    tabela_interativa()     
     st.write("Esse dataset contém informações, como o nome sugere, sobre os 1000 filmes com maior pontuação IMDB.")
     st.write("Suas colunas são:")
 
@@ -63,6 +67,7 @@ with tab1:
 
 with tab2:
     st.write(f'## Análises utilizando a coluna "*No_of_Votes*" ##')
+    tabela_interativa()
 
     # Função exibe gráfico que relaciona o número de votos de um filme e sua pontuação
     def votes_p_score(x):
@@ -121,6 +126,7 @@ with tab2:
 
 with tab3:
     st.write(f'## Análises utilizando a coluna "*Runtime*" ##')
+    tabela_interativa()
 
     # Duração média por gênero
     def runtime_p_genre(x):
@@ -217,7 +223,7 @@ with tab3:
 
 with tab4:
     st.write(f'## Análises utilizando a coluna "*{nota}*" ##')
-    st.dataframe(Anls.df[['Series_Title', 'Gross', 'Released_Year', 'Genre', f'{nota}', 'No_of_Votes', 'Runtime']])
+    tabela_interativa()
 
     # Função que imiprime o gráfico relacionando pontuação e duração do filme
     score_p_runtime(2)
@@ -313,7 +319,7 @@ with tab4:
 
 with tab5:
     st.write('## Análises utilizando a coluna "*Gross*" ##')
-    st.dataframe(Anls.df[['Series_Title', 'Gross','Released_Year', 'Genre', f'{nota}', 'No_of_Votes', 'Runtime']])
+    tabela_interativa()
 
 
     # Ganho bruto (médio) por gênero
@@ -389,6 +395,7 @@ with tab5:
 
 with tab6:
     st.write('## Análises utilizando a coluna "*Genre*" ##')
+    tabela_interativa()
 
     # Ocorrência de cada gênero entre os top 1000 filmes
     genre_counts(2)
@@ -468,7 +475,8 @@ with tab6:
 
 with tab7:
     st.write('## Análises utilizando a coluna "*Released_Year*" ##')
-
+    tabela_interativa()
+    
     # Exibe os gráfico que relacionam o ano de lançamento do filme com seu gênero
     year_p_genre(2)
     year_p_genre_m(2)
