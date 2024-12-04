@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from itertools import combinations, product
 import Anls
 
-def Vermelho '#B22222'
 
 
 # Título e cabeçalho
