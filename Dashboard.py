@@ -109,7 +109,7 @@ with tab2:
                              orientation='v',  # Gráfico vertical
                              color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre número de votos de um filme e sua pontuação')
-            st.plotly_chart(fig, key = '1')
+            st.plotly_chart(fig, key = 1 + x)
     votes_p_score(1)
 
     # Função mostra gráfico relacionando a arrecadação bruta de um filme e a quantidade de votos recebidos
@@ -127,7 +127,7 @@ with tab2:
                              orientation='v',  # Gráfico vertical
                              color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre ganho bruto do filme (em média) e o seu número de votos')
-            st.plotly_chart(fig, key = '2')
+            st.plotly_chart(fig, key = 2 + x)
     gross_p_votes(1)
 
     # Número de votos de um filme por sua duração
@@ -144,7 +144,7 @@ with tab2:
                              color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre o número de votos e a duração do filme')
 
-            st.plotly_chart(fig, key = '3')
+            st.plotly_chart(fig, key = 3 + x)
     votes_p_runtime(1)
 
 with tab3:
@@ -178,7 +178,7 @@ with tab3:
                 )
             )
 
-            st.plotly_chart(fig, key = '4')
+            st.plotly_chart(fig, key = 4 + x)
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
             st.button("Resetar", type="primary", key="runtime_p_genrex" + f'{x}')
@@ -205,7 +205,7 @@ with tab3:
                             orientation='v',  # Gráfico vertical
                             color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                             title='Relação entre a pontuação e a duração do filme')
-            st.plotly_chart(fig, key = '51')
+            st.plotly_chart(fig, key = 5 + x)
     score_p_runtime(1)
 
     # Função que gera um gráfico comparando a duração e a data de lançamento dos filmes
@@ -221,7 +221,7 @@ with tab3:
                              orientation='v',  # Gráfico vertical
                              color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre a data de lançamento e a duração do filme')
-            st.plotly_chart(fig, key = '6')
+            st.plotly_chart(fig, key = 6 + x)
     runtime_p_year(1)
 
     # Cria e exibe gráfico de comparação entre a arrecadação bruta de um filme e sua duração
@@ -241,7 +241,7 @@ with tab3:
                              orientation='v',  # Gráfico vertical
                              color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre ganho bruto do filme (em média) e sua duração')
-            st.plotly_chart(fig, key = '7')
+            st.plotly_chart(fig, key = 7+x)
     gross_p_runtime(1)
 
 with tab4:
@@ -266,7 +266,7 @@ with tab4:
                         color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras selecionada nas configurações
                         labels={'y': 'Gênero', 'x': 'Número de filmes'},
                         title='Ocorrência de cada gênero entre os top 1000 filmes')
-            st.plotly_chart(fig, key = '8')
+            st.plotly_chart(fig, key = 8+x)
         else:
             if tipo == "Pizza":
                 #Gera o gráfico de Pizza ou Torta
@@ -276,7 +276,7 @@ with tab4:
                             color=Anls.genre_counts.index,
                             color_discrete_sequence= px.colors.qualitative.Vivid, # Usando uma paleta de cores
                             title='Distribuição dos Gêneros entre os Top 1000 Filmes')
-                st.plotly_chart(fig, key = '9')
+                st.plotly_chart(fig, key = 9+x)
     genre_counts(1)
 
     def score_p_year(x):
@@ -294,7 +294,7 @@ with tab4:
                              orientation='v',  # Gráfico vertical
                              color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre a pontuação e a duração do filme')
-            st.plotly_chart(fig, key = '10')
+            st.plotly_chart(fig, key = 10+x)
             return
         if tipo == 'Barras':
 
@@ -306,7 +306,7 @@ with tab4:
                          color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras (vermelho)
                          labels={'y': 'Período de lançamento', 'x': 'Número de filmes'},
                          title='Ocorrência de cada período entre os top 1000 filmes')
-            st.plotly_chart(fig, key = '11')
+            st.plotly_chart(fig, key = 11 + x)
             return
         if tipo == 'Pizza':
             fig = px.pie(Anls.year_counts,
@@ -315,7 +315,7 @@ with tab4:
                         color=Anls.year_counts.index.astype(str),
                         color_discrete_sequence= px.colors.qualitative.Vivid, # Usando uma paleta de cores
                         title='Ocorrência de cada período entre os top 1000 filmes')
-            st.plotly_chart(fig, key = '12')
+            st.plotly_chart(fig, key = 12 + x)
     score_p_year(1)
 
     # Função mostra gráfico relacionando gross e pontuação do filme
@@ -335,7 +335,7 @@ with tab4:
                              orientation='v',  # Gráfico vertical
                              color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre ganho bruto do filme (em média) e sua pontuação')
-            st.plotly_chart(fig, key = '13')
+            st.plotly_chart(fig, key = 13 + x)
     gross_p_score(1)
 
     votes_p_score(2)
@@ -361,7 +361,7 @@ with tab5:
                          color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras
                          labels={'y': 'Gênero', 'x': 'Arrecadação'},
                          title='Relação entre gênero e ganho bruto do filme (em média)')
-            st.plotly_chart(fig, key = '14')
+            st.plotly_chart(fig, key = 14 + x)
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
             st.button("Resetar", type="primary")
@@ -381,7 +381,7 @@ with tab5:
                          color_discrete_sequence=[f'{cor}'],  # Cor única para todas as barras 
                          labels={'y': 'Gênero', 'x': 'Arrecadação'},
                          title='Relação entre ganho bruto do filme (em média) e seus gêneros')
-            st.plotly_chart(fig, key = '15')
+            st.plotly_chart(fig, key = 15 + x)
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
             st.button("Resetar", type="primary", key="gross_p_genrex" + f'{x}')
@@ -410,7 +410,7 @@ with tab5:
                              orientation='v',  # Gráfico vertical
                              color_discrete_sequence=[f'{cor}'],  # Cor única para a linha
                              title='Relação entre ganho bruto do filme (em média) e a sua data de lançamento')
-            st.plotly_chart(fig, key = '16')
+            st.plotly_chart(fig, key = 16 + x)
     gross_p_year(1)
 
     # Cria e exibe gráfico de comparação entre a arrecadação bruta de um filme e sua duração
@@ -454,7 +454,7 @@ with tab6:
                 )
             )
 
-            st.plotly_chart(fig, key = '17')
+            st.plotly_chart(fig, key = 17 + x)
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
             st.button("Resetar", type = "primary", key = "year_p_genrex" + f'{x}')
@@ -488,7 +488,7 @@ with tab6:
                 )
             )
 
-            st.plotly_chart(fig, key = '18')
+            st.plotly_chart(fig, key = 18 + x)
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
             st.button("Resetar", type="primary", key="year_p_genre_Mx")
