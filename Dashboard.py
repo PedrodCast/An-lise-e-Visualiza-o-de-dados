@@ -181,7 +181,7 @@ with tab3:
             st.plotly_chart(fig)
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
-            st.button("Resetar", type="primary", key="runtime_p_genrex")
+            st.button("Resetar", type="primary", key="runtime_p_genrex" + f'{x}')
             if st.button("Ver tabela", help="Relação gênero e duração média"):
                 st.dataframe(Anls.runtime_p_genre)
     runtime_p_genre(1)
@@ -255,7 +255,7 @@ with tab4:
     def genre_counts(x):
         st.write("#### Ocorrência de cada gênero entre os top 1000 filmes ####")
         # Permite que o usuário faça uma escolha, nesse caso, o tipo de gráfico
-        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras", "Pizza"], key =x)
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras", "Pizza"], key = 'genre_counts' + f'{x}')
 
         if tipo == "Barras":
             #Gera o gráfico de barras
@@ -384,8 +384,8 @@ with tab5:
             st.plotly_chart(fig)
 
             # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
-            st.button("Resetar", type="primary", key="gross_p_genrex")
-            if st.button("Ver tabela", help="Relação gênero e ganho bruto médio", key = "2"):
+            st.button("Resetar", type="primary", key="gross_p_genrex" + f'{x}')
+            if st.button("Ver tabela", help="Relação gênero e ganho bruto médio", key = 'gross_p_genrex2' + f'{x}'):
                 st.dataframe(Anls.gross_p_genre)
     gross_p_genre(1)
 
