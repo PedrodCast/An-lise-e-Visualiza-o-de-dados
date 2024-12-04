@@ -1,7 +1,11 @@
 import streamlit as st
+import millify as mils
+from PIL import Image
 import plotly.express as px
 import pandas as pd
 from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from itertools import combinations, product
 import Anls
 
 
@@ -21,7 +25,8 @@ nota = st.sidebar.selectbox("Escolha aqui qual pontuação do filme deve ser usa
 
 # As funções serão executas na aba x
 with tab1:
-  
+
+
     # Permite que o usuário escolha quais colunas ele deseja ver
     colunas = st.multiselect("Escolha as colunas que serão exibidas", Anls.df.columns, placeholder="Digite aqui")
     if colunas:
@@ -57,157 +62,423 @@ with tab1:
         st.write("**Avarage_score**  \nPontuação média entre IMDB e o Metascore")
     st.write(Anls.df.describe())
 
-#with tab2:
+with tab2:
+    st.write(f'## Análises utilizando a coluna "*No_of_Votes*" ##')
 
-#with tab3:
+    # Função exibe gráfico que relaciona o número de votos de um filme e sua pontuação
+    def votes_p_score(x):
+        st.write('#### Relação entre o número de votos do filme e a sua pontuação ####')
+        # Permite que o usuário faça uma escolha, nesse caso, o tipo de gráfico
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="votes_p_score" + f'{x}')
 
-#with tab4:
+        if tipo == "Dispersão":
+            st.write(":warning: Selecione o tipo de pontuação nas configurações")
+
+            # Gera o gráfico de barras
+            fig = px.scatter(Anls.df,
+                             # O tipo de pontuação é escolhida nas configurações
+                             x=f'{nota}',
+                             y='No_of_Votes',
+                             orientation='v',  # Gráfico vertical
+                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             title='Relação entre número de votos de um filme e sua pontuação')
+            st.plotly_chart(fig)
+    votes_p_score(1)
+
+    # Função mostra gráfico relacionando a arrecadação bruta de um filme e a quantidade de votos recebidos
+    def gross_p_votes(x):
+        st.write('#### Relação entre o ganho bruto do filme e o seu número de votos ####')
+        # Permite que o usuário faça uma escolha, nesse caso, o tipo de gráfico
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="gross_p_votes" + f'{x}')
+
+        if tipo == "Dispersão":
+            # Gera o gráfico de barras
+            fig = px.scatter(Anls.df,
+                             # O tipo de pontuação é escolhida nas configurações
+                             x='No_of_Votes',
+                             y='Gross',
+                             orientation='v',  # Gráfico vertical
+                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             title='Relação entre ganho bruto do filme (em média) e o seu número de votos')
+            st.plotly_chart(fig)
+    gross_p_votes(1)
+
+    # Número de votos de um filme por sua duração
+    def votes_p_runtime(x):
+        st.write('#### Relação entre o número de votos e a duração do filme ####')
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="votes_p_year" + f'{x}')
+
+        if tipo == "Dispersão":
+            # Gera o gráfico de dispersão
+            fig = px.scatter(Anls.df,
+                             y='Runtime',
+                             x='No_of_Votes',
+                             orientation='v',  # Gráfico vertical
+                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             title='Relação entre o número de votos e a duração do filme')
+
+            st.plotly_chart(fig)
+    votes_p_runtime(1)
+
+with tab3:
+    st.write(f'## Análises utilizando a coluna "*Runtime*" ##')
+
+    # Duração média por gênero
+    def runtime_p_genre(x):
+        st.write("#### Relação entre gênero e duração do filme ####")
+        # Permite que o usuário faça uma escolha, nesse caso, o tipo de gráfico
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras"], key="runtime_p_genre" + f'{x}')
+
+        if tipo == "Barras":
+
+            # Gera o gráfico de barras
+            fig = px.bar(Anls.runtime_p_genre,
+                         x='Genre',
+                         y='Runtime',
+                         orientation='v',  # Gráfico vertical
+                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         labels={'y': 'Gênero', 'x': 'Duração'},
+                         title='Relação entre gênero e duração do filme (em média)')
+
+            # Ajusta o intervalo do eixo X
+            fig.update_layout(
+                yaxis=dict(
+                    range=[
+                        Anls.runtime_p_genre['Runtime'].min() - 10,  # Menor ano - 10
+                        Anls.runtime_p_genre['Runtime'].max() + 10  # Maior ano + 10
+                    ]
+                )
+            )
+
+            st.plotly_chart(fig)
+
+            # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
+            st.button("Resetar", type="primary", key="runtime_p_genrex")
+            if st.button("Ver tabela", help="Relação gênero e duração média"):
+                st.dataframe(Anls.runtime_p_genre)
+    runtime_p_genre(1)
+
+    # Número de votos de um filme por sua duração
+    votes_p_runtime(2)
+
+    # Função que imiprime o gráfico relacionando pontuação e duração do filme
+    def score_p_runtime(x):
+        st.write('#### Relação entre a pontuação e a duração do filme ####')
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="score_p_runtime" + f'{x}')
+
+        if tipo == "Dispersão":
+            st.write(":warning: Selecione o tipo de pontuação nas configurações")
+
+            # Gera o gráfico de dispersão
+            fig = px.scatter(Anls.df,
+                            # O tipo de pontuação é escolhida nas configurações
+                            x='Runtime',
+                            y=f'{nota}',
+                            orientation='v',  # Gráfico vertical
+                            color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                            title='Relação entre a pontuação e a duração do filme')
+            st.plotly_chart(fig)
+    score_p_runtime(1)
+
+    # Função que gera um gráfico comparando a duração e a data de lançamento dos filmes
+    def runtime_p_year(x):
+        st.write('#### Relação entre a data de lançamento e a duração do filme ####')
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="runtime_p_year" + f'{x}')
+
+        if tipo == "Dispersão":
+            # Gera o gráfico de dispersão
+            fig = px.scatter(Anls.df,
+                             y='Runtime',
+                             x='Released_Year',
+                             orientation='v',  # Gráfico vertical
+                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             title='Relação entre a data de lançamento e a duração do filme')
+            st.plotly_chart(fig)
+    runtime_p_year(1)
+
+    # Cria e exibe gráfico de comparação entre a arrecadação bruta de um filme e sua duração
+    def gross_p_runtime(x):
+        st.write('#### Relação entre o ganho bruto do filme e a sua duração ####')
+        # Permite que o usuário faça uma escolha, nesse caso, o tipo de gráfico
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="gross_p_runtime" + f'{x}')
+
+        if tipo == "Dispersão":
+            st.write(":warning: Selecione o tipo de pontuação nas configurações")
+
+            # Gera o gráfico de barras
+            fig = px.scatter(Anls.df,
+                             # O tipo de pontuação é escolhida nas configurações
+                             x='Runtime',
+                             y='Gross',
+                             orientation='v',  # Gráfico vertical
+                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             title='Relação entre ganho bruto do filme (em média) e sua duração')
+            st.plotly_chart(fig)
+    gross_p_runtime(1)
+
+with tab4:
+    st.write(f'## Análises utilizando a coluna "*{nota}*" ##')
+    st.dataframe(Anls.df[['Series_Title', 'Gross', 'Released_Year', 'Genre', f'{nota}', 'No_of_Votes', 'Runtime']])
+
+    # Função que imiprime o gráfico relacionando pontuação e duração do filme
+    score_p_runtime(2)
+
+    # Função que imprime o gráfico ocorrência de cada gênero entre os top 1000 filmes
+    def genre_counts(x):
+        st.write("#### Ocorrência de cada gênero entre os top 1000 filmes ####")
+        # Permite que o usuário faça uma escolha, nesse caso, o tipo de gráfico
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras", "Pizza"], key =x)
+
+        if tipo == "Barras":
+            #Gera o gráfico de barras
+            fig = px.bar(Anls.genre_counts,
+                        x=Anls.genre_counts.index,
+                        y=Anls.genre_counts.values,
+                        orientation='v',  # Gráfico vertical
+                        color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                        labels={'y': 'Gênero', 'x': 'Número de filmes'},
+                        title='Ocorrência de cada gênero entre os top 1000 filmes')
+            st.plotly_chart(fig)
+        else:
+            if tipo == "Pizza":
+                #Gera o gráfico de Pizza ou Torta
+                fig = px.pie(Anls.genre_counts,
+                            values=Anls.genre_counts.values,  # Os valores são os números de filmes
+                            names=Anls.genre_counts.index,  # Os rótulos são os gêneros
+                            color=Anls.genre_counts.index,
+                            color_discrete_sequence= px.colors.qualitative.Vivid, # Usando uma paleta de cores
+                            title='Distribuição dos Gêneros entre os Top 1000 Filmes')
+                st.plotly_chart(fig)
+    genre_counts(1)
+
+    def score_p_year(x):
+        st.write('#### Relação entre a pontuação e a data de lançamento do filme ####')
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão", "Barras", "Pizza"], key="score_p_year" + f'{x}')
+
+        if tipo == "Dispersão":
+            st.write(":warning: Selecione o tipo de pontuação nas configurações")
+
+            # Gera o gráfico de dispersão
+            fig = px.scatter(Anls.df,
+                             # O tipo de pontuação é escolhida nas configurações
+                             x='Released_Year',
+                             y=f'{nota}',
+                             orientation='v',  # Gráfico vertical
+                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             title='Relação entre a pontuação e a duração do filme')
+            st.plotly_chart(fig)
+            return
+        if tipo == 'Barras':
+
+            # Gera o gráfico de barras
+            fig = px.bar(Anls.year_counts,
+                         x=Anls.year_counts.index.astype(str),
+                         y=Anls.year_counts.values,
+                         orientation='v',  # Gráfico vertical
+                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         labels={'y': 'Período de lançamento', 'x': 'Número de filmes'},
+                         title='Ocorrência de cada período entre os top 1000 filmes')
+            st.plotly_chart(fig)
+            return
+        if tipo == 'Pizza':
+            fig = px.pie(Anls.year_counts,
+                        values=Anls.year_counts.values,  # Os valores são os números de filmes
+                        names=Anls.year_counts.index.astype(str),  # Os rótulos são os gêneros
+                        color=Anls.year_counts.index.astype(str),
+                        color_discrete_sequence= px.colors.qualitative.Vivid, # Usando uma paleta de cores
+                        title='Ocorrência de cada período entre os top 1000 filmes')
+            st.plotly_chart(fig)
+    score_p_year(1)
+
+    # Função mostra gráfico relacionando gross e pontuação do filme
+    def gross_p_score(x):
+        st.write('#### Relação entre o ganho bruto do filme e a sua pontuação ####')
+        # Permite que o usuário faça uma escolha, nesse caso, o tipo de gráfico
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="gross_p_score" + f'{x}')
+
+        if tipo == "Dispersão":
+            st.write(":warning: Selecione o tipo de pontuação nas configurações")
+
+            # Gera o gráfico de barras
+            fig = px.scatter(Anls.df,
+                             # O tipo de pontuação é escolhida nas configurações
+                             x=f'{nota}',
+                             y='Gross',
+                             orientation='v',  # Gráfico vertical
+                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             title='Relação entre ganho bruto do filme (em média) e sua pontuação')
+            st.plotly_chart(fig)
+    gross_p_score(1)
+
+    votes_p_score(2)
 
 with tab5:
     st.write('## Análises utilizando a coluna "*Gross*" ##')
+    st.dataframe(Anls.df[['Series_Title', 'Gross','Released_Year', 'Genre', f'{nota}', 'No_of_Votes', 'Runtime']])
 
-    st.write('#### Relação entre gênero e ganho bruto do filme ####')
-    # Permite que o usuário faça uma escolha, nesse caso, o tipo6 de gráfico
-    tipo5 = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras"], key="gross_p_genre")
 
-    if tipo5 == "Barras":
+    # Ganho bruto (médio) por gênero
+    def gross_p_genre(x):
+        st.write("#### Relação entre gênero e ganho bruto do filme ####")
+        # Permite que o usuário faça uma escolha, nesse caso, o tipo de gráfico
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras"], key="genre_p_gross" + f'{x}')
 
-        # Gera o gráfico de barras
-        fig = px.bar(Anls.gross_p_genre,
-                     x='Genre',
-                     y='Gross',
-                     orientation='v',  # Gráfico vertical
-                     color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
-                     labels={'y': 'Gênero', 'x': 'Arrecadação'},
-                     title='Relação entre ganho bruto do filme (em média) e seus gêneros')
-        st.plotly_chart(fig)
+        if tipo == "Barras":
 
-        # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
-        st.button("Resetar", type="primary", key="gross_p_genrex")
-        if st.button("Ver tabela", help="Relação gênero e ganho bruto médio", key = "2"):
-            st.dataframe(Anls.gross_p_genre)
-
-    st.write('#### Relação entre o ganho bruto do filme e a sua pontuação ####')
-    # Permite que o usuário faça uma escolha, nesse caso, o tipo6 de gráfico
-    tipo5 = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="gross_p_score")
-
-    if tipo5 == "Dispersão":
-        st.write(":warning: Selecione o tipo de pontuação nas configurações")
-
-        # Gera o gráfico de barras
-        fig = px.scatter(Anls.df,
-                    # O tipo de pontuação é escolhida nas configurações
-                     x=f'{nota}',
-                     y='Gross',
-                     orientation = 'v',# Gráfico vertical
-                     color_discrete_sequence=['#B22222'],  # Cor única para a linha
-                     title='Relação entre ganho bruto do filme (em média) e sua pontuação')
-        st.plotly_chart(fig)
-
-    st.write('#### Relação entre o ganho bruto do filme e o seu número de votos ####')
-    # Permite que o usuário faça uma escolha, nesse caso, o tipo6 de gráfico
-    tipo5 = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="gross_p_votes")
-
-    if tipo5 == "Dispersão":
-
-        # Gera o gráfico de barras
-        fig = px.scatter(Anls.df,
-                         # O tipo de pontuação é escolhida nas configurações
-                         x='No_of_Votes',
+            # Gera o gráfico de barras
+            fig = px.bar(Anls.gross_p_genre,
+                         x='Genre',
                          y='Gross',
                          orientation='v',  # Gráfico vertical
-                         color_discrete_sequence=['#B22222'],  # Cor única para a linha
-                         title='Relação entre ganho bruto do filme (em média) e o seu número de votos')
-        st.plotly_chart(fig)
+                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         labels={'y': 'Gênero', 'x': 'Arrecadação'},
+                         title='Relação entre gênero e ganho bruto do filme (em média)')
+            st.plotly_chart(fig)
+
+            # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
+            st.button("Resetar", type="primary")
+            if st.button("Ver tabela", help="Relação gênero e ganho bruto médio"):
+                st.dataframe(Anls.gross_p_genre)
+        st.write('#### Relação entre gênero e ganho bruto do filme ####')
+        # Permite que o usuário faça uma escolha, nesse caso, o tipo de gráfico
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras"], key="gross_p_genre" + f'{x}')
+
+        if tipo == "Barras":
+
+            # Gera o gráfico de barras
+            fig = px.bar(Anls.gross_p_genre,
+                         x='Genre',
+                         y='Gross',
+                         orientation='v',  # Gráfico vertical
+                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         labels={'y': 'Gênero', 'x': 'Arrecadação'},
+                         title='Relação entre ganho bruto do filme (em média) e seus gêneros')
+            st.plotly_chart(fig)
+
+            # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
+            st.button("Resetar", type="primary", key="gross_p_genrex")
+            if st.button("Ver tabela", help="Relação gênero e ganho bruto médio", key = "2"):
+                st.dataframe(Anls.gross_p_genre)
+    gross_p_genre(1)
+
+    # Função mostra gráfico relacionando gross e pontuação do filme
+    gross_p_score(2)
+
+    # Função mostra gráfico relacionando a arrecadação bruta de um filme e a quantidade de votos recebidos
+    gross_p_votes(2)
+
+    # Cria e exibe gráfico de comparação entre a arrecadação bruta de um filme e sua data de lançamento
+    def gross_p_year(x):
+        st.write('#### Relação entre o ganho bruto do filme e a data de seu lançamento ####')
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Dispersão"], key="gross_p_year" + f'{x}')
+
+        if tipo == "Dispersão":
+
+            # Gera o gráfico de barras
+            fig = px.scatter(Anls.df,
+                             # O tipo de pontuação é escolhida nas configurações
+                             x='Released_Year',
+                             y='Gross',
+                             orientation='v',  # Gráfico vertical
+                             color_discrete_sequence=['#B22222'],  # Cor única para a linha
+                             title='Relação entre ganho bruto do filme (em média) e a sua data de lançamento')
+            st.plotly_chart(fig)
+    gross_p_year(1)
+
+    # Cria e exibe gráfico de comparação entre a arrecadação bruta de um filme e sua duração
+    gross_p_runtime(2)
 
 with tab6:
     st.write('## Análises utilizando a coluna "*Genre*" ##')
 
-    st.write("#### Ocorrência de cada gênero entre os top 1000 filmes ####")
-    # Permite que o usuário faça uma escolha, nesse caso, o tipo6 de gráfico
-    tipo6 = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras", "Pizza"], key ="genre_counts")
+    # Ocorrência de cada gênero entre os top 1000 filmes
+    genre_counts(2)
 
-    if tipo6 == "Barras":
-        #Gera o gráfico de barras
-        fig = px.bar(Anls.genre_counts,
-                    x=Anls.genre_counts.index,
-                    y=Anls.genre_counts.values,
-                    orientation='v',  # Gráfico vertical
-                    color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
-                    labels={'y': 'Gênero', 'x': 'Número de filmes'},
-                    title='Ocorrência de cada gênero entre os top 1000 filmes')
-        st.plotly_chart(fig)
-    else:
-        if tipo6 == "Pizza":
-            #Gera o gráfico de Pizza ou Torta
-            fig = px.pie(Anls.genre_counts,
-                        values=Anls.genre_counts.values,  # Os valores são os números de filmes
-                        names=Anls.genre_counts.index,  # Os rótulos são os gêneros
-                        color=Anls.genre_counts.index,
-                        color_discrete_sequence= px.colors.qualitative.Vivid, # Usando uma paleta de cores
-                        title='Distribuição dos Gêneros entre os Top 1000 Filmes')
+    # Ganho bruto (médio) por gênero
+    gross_p_genre(2)
+
+    # Duração média por gênero
+    runtime_p_genre(2)
+
+    # Função que mostra o gráfico relacionando a data de lançamento mais comum por gênero
+    def year_p_genre(x):
+        st.write("#### Relação entre data de lançamento mais comum por gênero ####")
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras"], key ="year_p_genre" + f'{x}')
+
+        if tipo == "Barras":
+            # Gera o gráfico de barras
+            fig = px.bar(Anls.year_p_genre,
+                         x='Genre',
+                         y='Released_Year',
+                         orientation='v',  # Gráfico vertical
+                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         labels={'y': 'Gênero', 'x': 'Ano de lançamento'},
+                         title='Relação entre gênero e data de lançamento mais comum')
+
+            # Ajusta o intervalo do eixo X
+            fig.update_layout(
+                yaxis=dict(
+                    range=[
+                        Anls.year_p_genre['Released_Year'].min() - 10,  # Menor ano - 10
+                        Anls.year_p_genre['Released_Year'].max() + 10  # Maior ano + 10
+                    ]
+                )
+            )
+
             st.plotly_chart(fig)
 
-    st.write("#### Relação entre gênero e ganho bruto do filme ####")
-    # Permite que o usuário faça uma escolha, nesse caso, o tipo6 de gráfico
-    tipo6 = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras"], key ="genre_p_gross")
+            # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
+            st.button("Resetar", type = "primary", key = "year_p_genrex" + f'{x}')
+            if st.button("Ver tabela", help = "Relação gênero e data de lançamento mais comum"):
+                st.dataframe(Anls.year_p_genre)
+    year_p_genre(1)
 
-    if tipo6 == "Barras":
 
-        # Gera o gráfico de barras
-        fig = px.bar(Anls.gross_p_genre,
-                     x='Genre',
-                     y='Gross',
-                     orientation='v',  # Gráfico vertical
-                     color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
-                     labels={'y': 'Gênero', 'x': 'Arrecadação'},
-                     title='Relação entre gênero e ganho bruto do filme (em média)')
-        st.plotly_chart(fig)
+    # Função que mostra o gráfico relacionando a data de lançamento média por gênero
+    def year_p_genre_m(x):
+        st.write("#### Relação entre data de lançamento média por gênero ####")
+        tipo = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras"], key="year_p_genre_M" + f'{x}')
 
-        # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
-        st.button("Resetar", type = "primary")
-        if st.button("Ver tabela", help = "Relação gênero e ganho bruto médio"):
-            st.dataframe(Anls.gross_p_genre)
+        if tipo == "Barras":
+            # Gera o gráfico de barras
+            fig = px.bar(Anls.year_p_genre_M,
+                         x='Genre',
+                         y='Released_Year',
+                         orientation='v',  # Gráfico vertical
+                         color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
+                         labels={'y': 'Gênero', 'x': 'Ano de lançamento'},
+                         title='Relação entre gênero e data de lançamento média')
 
-    st.write("#### Relação entre gênero e duração do filme ####")
-    # Permite que o usuário faça uma escolha, nesse caso, o tipo6 de gráfico
-    tipo6 = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras"], key ="runtime_p_genre")
+            # Ajusta o intervalo do eixo X
+            fig.update_layout(
+                yaxis=dict(
+                    range=[
+                        Anls.year_p_genre_M['Released_Year'].min() - 10,  # Menor ano - 10
+                        Anls.year_p_genre_M['Released_Year'].max() + 10  # Maior ano + 10
+                    ]
+                )
+            )
 
-    if tipo6 == "Barras":
+            st.plotly_chart(fig)
 
-        # Gera o gráfico de barras
-        fig = px.bar(Anls.runtime_p_genre,
-                     x='Genre',
-                     y='Runtime',
-                     orientation='v',  # Gráfico vertical
-                     color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
-                     labels={'y': 'Gênero', 'x': 'Duração'},
-                     title='Relação entre gênero e duração do filme (em média)')
-        st.plotly_chart(fig)
+            # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
+            st.button("Resetar", type="primary", key="year_p_genre_Mx")
+            if st.button("Ver tabela", help="Relação gênero e média de data de lançamento"):
+                st.dataframe(Anls.year_p_genre_M)
+    year_p_genre_m(1)
 
-        # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
-        st.button("Resetar", type = "primary", key = "runtime_p_genrex")
-        if st.button("Ver tabela", help = "Relação gênero e duração média"):
-            st.dataframe(Anls.runtime_p_genre)
+with tab7:
+    st.write('## Análises utilizando a coluna "*Released_Year*" ##')
 
-    st.write("#### Relação entre gênero e ano de lançamento do filme ####")
-    # Permite que o usuário faça uma escolha, nesse caso, o tipo6 de gráfico
-    tipo6 = st.selectbox("Selecione o tipo de gráfico:", ["Selecione", "Barras"], key ="year_p_genre")
+    # Exibe os gráfico que relacionam o ano de lançamento do filme com seu gênero
+    year_p_genre(2)
+    year_p_genre_m(2)
 
-    if tipo6 == "Barras":
-        # Gera o gráfico de barras
-        fig = px.bar(Anls.year_p_genre,
-                     x='Genre',
-                     y='Released_Year',
-                     orientation='v',  # Gráfico vertical
-                     color_discrete_sequence=['#B22222'],  # Cor única para todas as barras (vermelho)
-                     labels={'y': 'Gênero', 'x': 'Data de lançamento'},
-                     title='Relação entre gênero e data de lançamento mais comum')
-        st.plotly_chart(fig)
+    # Função que cria visualizações para a relação entre a pontuação de um filme e o seu ano de lançamento
+    score_p_year(2)
 
-        # Se o usuário pressionar esse botão, ele vê o dataframe, se ele pressionar reset, ele volta
-        st.button("Resetar", type = "primary", key = "year_p_genrex")
-        if st.button("Ver tabela", help = "Relação gênero e data de lançamento mais comum"):
-            st.dataframe(Anls.year_p_genre)
+    # Função que cria visualizações para a relação entre a duração do filme e sua data de lançamento
+    runtime_p_year(2)
 
-#with tab7:
+    # Função que cria visualizações para a relação entre a arrecadação bruta de bilheteria de um filme e sua data de lançamento
+    gross_p_year(2)
